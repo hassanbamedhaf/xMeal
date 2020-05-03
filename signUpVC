@@ -1,0 +1,74 @@
+import UIKit
+
+class signUpVC: UIViewController {
+
+    //profile image
+    @IBOutlet weak var avaImg: UIImageView!
+    //text fields
+    @IBOutlet weak var usernameTxt: UITextField!
+    @IBOutlet weak var passwordTxt: UITextField!
+    @IBOutlet weak var repeatPassword: UITextField!
+    @IBOutlet weak var fullnameTxt: UITextField!
+    // button for sign up
+    @IBOutlet weak var signUpBtn: UIButton!
+    // button for cancel
+    @IBOutlet weak var cancelBtn: UIButton!
+    //scrollView
+    @IBOutlet weak var scrollView: UIScrollView!
+    //reset detault size of the screen after the keyboard
+    var scrollViewHeight : CGFloat = 0
+    // keyboard frame size
+    var keyboard = CGRect()
+    
+    
+   override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        //scrollview frame size
+        scrollView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
+        scrollView.contentSize.height = self.view.frame.height
+        scrollViewHeight = scrollView.frame.size.height
+        //check notification if keyboard is showing or not
+        NotificationCenter.default.addObserver(self, selector: Selector(("showKeyboard:")), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: Selector(("hideKeyboard:")), name: UIResponder.keyboardWillHideNotification, object: nil)
+        //declare hide keyboard tap
+        let hideTap = UITapGestureRecognizer(target: self, action:Selector(("hideKeyboardTap:")))
+        hideTap.numberOfTapsRequired = 1
+        self.view.isUserInteractionEnabled = true
+        self.view.addGestureRecognizer(hideTap)
+        
+        }
+    
+    //hide keyboard if tap
+   func hideKeyboardTap(recoginzer:UITapGestureRecognizer) {
+        self.view.endEditing(true)
+    }
+
+    //show keyboard funcation
+     func showKeyboard(notification:NSNotification) {
+        //define keyboard size
+        keyboard = ((notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey]! as AnyObject).cgRectValue)!;
+        //move up UI
+        UIView.animate(withDuration: 0.4) { () -> Void in
+                self.scrollView.frame.size.height = self.scrollViewHeight - self.keyboard.height
+        }
+    }
+    
+    // hide keyboard funcation
+    func hideKeyboard(notification:NSNotification) {
+   // move down UI
+        UIView.animate(withDuration: 0.4) { () -> Void in
+            self.scrollView.frame.size.height = self.view.frame.height
+        }
+    }
+    
+    // clicked sign up
+            @IBAction func signUpBtn_click(_ sender: AnyObject) {
+        print("sign up pressed")
+    }
+    // clicked cancel
+         @IBAction func cancelBtn_click(_ sender: AnyObject) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+}
